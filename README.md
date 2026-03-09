@@ -1,6 +1,4 @@
 # Four wheel load
-這個簡單模組主要用來方便計算4輪負載。
-
 ## [計算函式](wheel_load_tools/tools.md)
 1. 最小作用量原理求解>>[分析力學操作解釋](wheel_load_tools/Solve.md)
 2. 重心分配求解
