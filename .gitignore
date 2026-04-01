@@ -1,10 +1,10 @@
 # 要忽略的資料夾
-Tire-Z-Rigidity/data/csv/
-Tire-Z-Rigidity/data/excel/
-Tire-Z-Rigidity/data/mat/
-Tire-Z-Rigidity/data/Filtered_data/
-Tire-Z-Rigidity/Filter/Filtering_Limits_stage.json
-Tire-Z-Rigidity/Figures/*.png
+Tire_Z_Rigidity/data/csv/
+Tire_Z_Rigidity/data/excel/
+Tire_Z_Rigidity/data/mat/
+Tire_Z_Rigidity/data/Filtered_data/
+Tire_Z_Rigidity/Filter/Filtering_Limits_stage.json
+Tire_Z_Rigidity/Figures/*.png
 result.md
 # 編譯或暫存檔
 *.log
