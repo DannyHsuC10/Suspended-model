@@ -1,0 +1,3 @@
+name,value,comment,unit
+critical_m,300/4,sprung mass for critical damping,kg
+critical_k,"linspace(10000,300000,1000)",spring stiffness sweep,N/m

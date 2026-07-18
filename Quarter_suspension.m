@@ -8,6 +8,7 @@ mu = 15-4;% 簧下
 ks = 70000;
 kt = 99000;
 c = 4000;
+
 vs = 0;
 vu = 0;
 
@@ -21,7 +22,7 @@ zs = zu + (Fs_i/ ks); % 簧上位移
 
 zr = 0;
 
-dt = 0.00001;
+dt = 0.001;
 t = 0;
 
 as_list = [];
@@ -41,6 +42,7 @@ for i = 1:dt:5
     Fs = ks*(zu-zs);
     Fd = c*(vu-vs);
     Ft = kt*(zr-zu);
+
     as = (-ms*g+Fs+Fd)/ms;
     au = (-mu*g-Fs-Fd+Ft)/mu;
 
@@ -73,3 +75,10 @@ xlabel('Time (s)');
 ylabel('a (m/s^2)');
 title('a Over Time');
 grid on;
+
+% Calculate and display the maximum position and acceleration
+maxZs = max(zs_list);
+maxAs = max(as_list);
+
+disp(['Maximum Position of Spring: ', num2str(maxZs), ' m']);
+disp(['Maximum Acceleration: ', num2str(maxAs), ' m/s^2']);

@@ -1,4 +1,5 @@
 # 要忽略的資料夾
+# 剛性絕對不能上傳到github有機密資料
 Tire_Z_Rigidity/data/csv/
 Tire_Z_Rigidity/data/excel/
 Tire_Z_Rigidity/data/mat/

@@ -1,0 +1,4 @@
+name,value,comment,unit
+overall_Ks,30000,suspension stiffness,N/m
+overall_Kt,200000,tire stiffness,N/m
+overall_ratio,1:1:20,chassis stiffness ratio sweep,

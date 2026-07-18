@@ -1,0 +1,7 @@
+name,value,comment,unit
+time_m,250/4,single dof mass,kg
+time_k,40000,spring stiffness,N/m
+time_x0,0.05,initial displacement,m
+time_v0,0,initial velocity,m/s
+time_t_end,5,end time,s
+time_dt_list,[1e-2 1e-3 1e-4 1e-5],time step sweep,s

@@ -1,0 +1,13 @@
+name,value,comment,unit
+quarter_ms,250/4,sprung mass,kg
+quarter_mu,40,unsprung mass,kg
+quarter_ks,40000,suspension stiffness,N/m
+quarter_kt,180000,tire stiffness,N/m
+quarter_zeta,0.6,damping ratio,
+quarter_xs0,0,initial sprung displacement,m
+quarter_vs0,0,initial sprung velocity,m/s
+quarter_xu0,0,initial unsprung displacement,m
+quarter_vu0,0,initial unsprung velocity,m/s
+quarter_tspan,[0 1],time span,s
+quarter_road_step_time,0.1,road step time,s
+quarter_road_step_height,0.05,road step height,m

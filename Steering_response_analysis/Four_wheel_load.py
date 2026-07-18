@@ -13,16 +13,18 @@ class Car:
 
         self.t_front = 1.3
         self.t_rear = 1.25
-        self.K = np.array([[30000,0,0,0],
+
+        self.K = np.array([[30000,0,0,0], # 主要先用這個版本分析
                           [0,30000,0,0],
                           [0,0,20000,0],
-                          [0,0,0,20000]])# ride rate
-        self.K_modal = np.array([[3050,0,0],# K_heave
-                                 [0,550,0],# K_roll
-                                 [0,0,2500]]) #  K_pitch
+                          [0,0,0,20000]]) # ride rate
         
-        self.K_tire = np.array([56000]*4)
+        self.K_tire = np.array([56000]*4) # 先不考慮直接用K 解ride rate
 
+        # 工作狀況分類
+        self.K_modal = np.array([[3050,0,0], # K_heave
+                            [0,550,0],# K_roll
+                            [0,0,2500]]) #  K_pitch
 # =========================
 # 幾何
 # =========================

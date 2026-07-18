@@ -11,16 +11,23 @@ class Car:
         self.L_front = 0.806
         self.L = self.L_front+self.L_rear
 
-        self.t_front = 1.3
+        self.t_front = 1.25
         self.t_rear = 1.25
         self.K = np.array([[30000,0,0,0],
                           [0,30000,0,0],
-                          [0,0,20000,0],
-                          [0,0,0,20000]])# ride rate
+                          [0,0,27000,0],
+                          [0,0,0,27000]])# ride rate
         self.K_modal = np.array([[3050,0,0],# K_heave
                                  [0,550,0],# K_roll
                                  [0,0,2500]]) #  K_pitch
         
+        self.K_modal_coupled = np.array([
+                [3050, 0, 0, 0],# K_heave
+                [0, 600 + 2900, -2900, 0],# K_roll_f + K_torsion, -K_torsion
+                [0, -2900, 500 + 2900, 0],# -K_torsion, K_roll_r + K_torsion
+                [0, 0, 0, 2500]# K_pitch
+            ])
+
         self.K_tire = np.array([56000]*4)
 
 # =========================
@@ -142,7 +149,7 @@ def _get_Ab(ax, ay, car, F_add=None, CF_rela=None):
 # CG 法
 # =========================
 def solve_cg(ax, ay, car, F_add=None, CF_rela=None, check=False):
-    """重心分配法，假設剛性相同"""
+
     # 1. 靜態荷重計算 (考慮重心位置)
     F_z_front_static = car.W * (car.L_rear / car.L)
     F_z_rear_static  = car.W * (car.L_front / car.L)
@@ -205,7 +212,6 @@ def solve_lsm(ax, ay, car, F_add=None, CF_rela=None, check=False):
 # 加權 Lagrange
 # =========================
 def solve_lagrange(ax, ay, car, F_add = None, CF_rela = None, check=False):
-    """拉格朗日，能量分布，加入剛性考慮"""
     x_pos, y_pos, _ = _get_geometry(car)
     A, b, Mx_add, My_add = _get_Ab(ax, ay, car, F_add, CF_rela)
 
@@ -224,8 +230,10 @@ def solve_lagrange(ax, ay, car, F_add = None, CF_rela = None, check=False):
 # 一般懸吊附載模型
 # =========================
 def solve_suspension(ax, ay, car, F_add=None, check=False, CF_rela=None):
-    """透過roll pitch 姿態進行求解，和拉格朗日概念相同，但是更容易擴展"""
     x_pos, y_pos, _ = _get_geometry(car)
+
+    # =========================
+    # 建立幾何矩陣
     # =========================
     # Δz = z + φ*y - θ*x
     B = np.vstack([
@@ -328,6 +336,125 @@ def solve_decoupled(ax, ay, car, F_add=None, check=False, CF_rela=None):
                 N, x_pos, y_pos, Mx_add, My_add)
     return N
 
+"""
+# =========================
+# 耦合彈簧模型
+# =========================
+def solve_coupled_vehicle(ax, ay, car, k_susp_func,
+                         F_add=None, CF_rela=None,
+                         tol=1e-6, max_iter=20, check=False):
+
+    x_pos, y_pos, _ = _get_geometry(car)
+
+    # =========================
+    # 建立 B matrix
+    # =========================
+    B = np.zeros((4, 4))
+    for i in range(4):
+        B[i, 0] = 1.0  # heave
+        if i < 2:
+            B[i, 1] = y_pos[i]   # front roll
+        else:
+            B[i, 2] = y_pos[i]   # rear roll
+        B[i, 3] = -x_pos[i]      # pitch
+
+    # =========================
+    # 外力統一處理（和其他 solver 一致）
+    # =========================
+    Fz_add, Mx_add, My_add = _external_effects(car, F_add, CF_rela)
+
+    # =========================
+    # modal force（正確分配版）
+    # =========================
+    Mx_total = car.m * ay * car.h + Mx_add
+    My_total = car.m * ax * car.h + My_add
+    Fz_total = car.m * g - Fz_add[2]   # 注意方向（N 要撐住重量）
+
+    # 👉 roll 前後分配（用軸距比例）
+    Mx_front = Mx_total * (car.L_rear / car.L)
+    Mx_rear  = Mx_total * (car.L_front / car.L)
+
+    b_modal = np.array([
+        Fz_total,     # heave
+        Mx_front,     # front roll
+        Mx_rear,      # rear roll
+        My_total      # pitch
+    ])
+
+    # =========================
+    # 迭代解 q
+    # =========================
+    q = np.zeros(4)
+
+    for _ in range(max_iter):
+
+        dz = B @ q
+
+        k_susp = k_susp_func(dz)
+        k_eq = 1 / (1/k_susp + 1/car.K_tire)
+
+        K_corner = np.diag(k_eq)
+
+        K_from_tires = B.T @ K_corner @ B
+
+        M = car.K_modal_coupled + K_from_tires
+
+        try:
+            q_new = np.linalg.solve(M, b_modal)
+        except np.linalg.LinAlgError:
+            print("Matrix singular. Check stiffness definition.")
+            break
+
+        if np.linalg.norm(q_new - q) < tol:
+            q = q_new
+            break
+
+        q = q_new
+
+    # =========================
+    # 輪載計算（修正重點）
+    # =========================
+    dz_final = B @ q
+    N = k_eq * dz_final   # 👉 直接當最終輪載（不是 delta）
+
+    # =========================
+    # 驗證（統一）
+    # =========================
+    if check:
+        print("=== solve_coupled_vehicle ===")
+        _debug(ax, ay, car, F_add if F_add is not None else np.zeros(3),
+                    N, x_pos, y_pos, Mx_add, My_add)
+
+    return N
+
+
+# 彈簧簡化模型
+def k_susp_func_s(dz):
+    return np.array([30000, 30000, 28000, 28000])
+
+# 彈簧模型
+def k_susp_func_n(dz):
+    base = np.array([30000, 30000, 28000, 28000])
+
+    # 非線性（例如壓縮變硬）
+    return base * (1 + 0.1 * np.clip(dz, 0, None))
+
+# 彈簧進階模型
+def k_susp_func_a(dz):
+
+    # wheel → spring compression
+    mr = np.array([0.9, 0.9, 0.85, 0.85])
+
+    spring_rate = np.array([35000, 35000, 30000, 30000])
+
+    k_wheel = spring_rate * mr**2
+
+    # geometric nonlinearity
+    k_wheel *= (1 + 0.2 * np.abs(dz))
+
+    return k_wheel
+
+"""
 
 if __name__ == "__main__":
 
@@ -337,10 +464,8 @@ if __name__ == "__main__":
     F_add=np.array([0, 0, 0])# 外加力量 (Fx, Fy, Fz)
 
     print("ax:",ax," ay:",ay)
-    #solve_cg(ax, ay, car, check=True)
-    #solve_lsm(ax, ay, car, check=True)
-    solve_lagrange(ax, ay, car, check=True, F_add=None, CF_rela=None)
-    solve_suspension(ax, ay, car, check=True, F_add=None, CF_rela=None)
-    #solve_decoupled(ax, ay, car, check=True)
-
-
+    solve_cg(ax, ay, car, check=True)
+    solve_lsm(ax, ay, car, check=True)
+    solve_lagrange(ax, ay, car, check=True)# 最優
+    solve_suspension(ax, ay, car, check=True)
+    solve_decoupled(ax, ay, car, check=True)

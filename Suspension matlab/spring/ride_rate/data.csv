@@ -1,0 +1,4 @@
+name,value,comment,unit
+ride_MR,0.9,motion ratio,
+ride_Kt,180000,tire stiffness,N/m
+ride_Ks,"linspace(10000,500000,2000)",spring stiffness sweep,N/m
