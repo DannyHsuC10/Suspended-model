@@ -1,0 +1,5 @@
+name,value,comment,unit
+unsprung_Ks,80000,spring stiffness,N/m
+unsprung_MR,0.9,motion ratio,
+unsprung_Kt,180000,tire stiffness,N/m
+unsprung_mu,"linspace(10,80,1000)",unsprung mass sweep,kg

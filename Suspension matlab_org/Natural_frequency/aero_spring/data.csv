@@ -1,0 +1,7 @@
+name,value,comment,unit
+aero_g,9.81,gravity,m/s^2
+aero_m,300,vehicle mass,kg
+aero_a,1.6,maximum acceleration in g,
+aero_h,0.28,cg height,m
+aero_L,1.55,wheelbase,m
+aero_theta,deg2rad(1):deg2rad(1):deg2rad(30),allowable pitch angle sweep,rad

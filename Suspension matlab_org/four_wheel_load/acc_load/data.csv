@@ -1,0 +1,8 @@
+name,value,comment,unit
+acc_g,9.81,gravity,m/s^2
+acc_l,1.55,wheelbase,m
+acc_l_f,0.806,cg to front axle,m
+acc_m,300,vehicle mass,kg
+acc_mu_w,1.6,tire friction coefficient,
+acc_h_cog,0.28,cg height,m
+acc_a_count,100,acceleration sweep count,

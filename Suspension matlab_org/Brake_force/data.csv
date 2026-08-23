@@ -1,0 +1,16 @@
+﻿name,value,註解,unit
+brake_g,9.81,重力加速度,m/s^2
+mu_w,1.6,x方向摩擦係數,
+r_w,0.259,輪胎半徑,m
+r_disc_o,0.21,碟盤半徑,m
+d_gap,0.02,碟盤外徑,m
+mu_pad,0.55,來令片摩擦係數,
+D_mc_f,1.20E-02,前MC直徑,m
+D_mc_r,1.40E-02,後MC直徑,m
+D_caliper_f,3.40E-02,前卡前活塞直徑,m
+D_caliper_r,3.40E-02,後卡前活塞直徑,m
+F_driver,5.00E+02,車手出力,N
+balance_bar,7.00E-01,BB,
+PR,2.00E+00,踏板比,
+N_caliper_f,2.00E+00,對N前,
+N_caliper_r,2.00E+00,對N後,
