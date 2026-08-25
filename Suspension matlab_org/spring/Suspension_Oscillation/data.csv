@@ -1,7 +1,0 @@
-name,value,comment,unit
-osc_m,250/4,single dof mass,kg
-osc_k,40000,spring stiffness,N/m
-osc_x0,0.05,initial displacement,m
-osc_v0,0,initial velocity,m/s
-osc_dt,0.00001,time step,s
-osc_t_end,5,end time,s

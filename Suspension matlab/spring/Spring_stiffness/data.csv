@@ -1,3 +1,0 @@
-name,value,comment,unit
-spring_stiffness_m,250/4,quarter car mass,kg
-spring_stiffness_k,"linspace(10000,300000,1000)",spring stiffness sweep,N/m

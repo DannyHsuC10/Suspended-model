@@ -1,8 +1,0 @@
-name,value,comment,unit
-tire_R,0.20,tire radius,m
-tire_E,8e6,rubber modulus,Pa
-tire_V,2.6e-3,tire volume,m^3
-tire_m,3.6,tire mass,kg
-tire_A,2500e-6,cross section area,m^2
-tire_I,1.78e-5,second moment of area,m^4
-tire_mode_max,8,maximum mode number,
