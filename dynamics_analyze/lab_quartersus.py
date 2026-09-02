@@ -1,8 +1,6 @@
 import numpy as np
 from pathlib import Path
 
-
-
 from data_visualization.Dynamic_Visualizer_quarter import Visualizer
 from data_visualization.Simulation_Logger import SimulationLogger
 
@@ -22,12 +20,11 @@ current_dir = Path(__file__).resolve().parent
 # Simulation
 t = np.arange(0, 2, state.dt)
 
-
 for ti in t:
     # Time
 
     # Road input
-    zr = qr.road_bump(state)# 凸起路面
+    zr = qr.road_bump(state ,height=0.005)# 凸起路面
     #zr = qr.road_step(state)
     #zr = qr.road_impulse(state)# 凸起路面
     #zr = qr.road_sine(state)# 凸起路面
@@ -47,7 +44,7 @@ for ti in t:
 
 # =======================================================================
 # show
-
-viewer = Visualizer(logger.result())
-viewer.show()
+path = current_dir / "twe_bump.gif"
+viewer = Visualizer(logger.result(),save_filename=path)
+viewer.show()#(save=True)
 

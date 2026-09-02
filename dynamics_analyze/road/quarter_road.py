@@ -19,7 +19,7 @@ def road_impulse(state,h = 0.01,start = 0.5,duration = 0.1):# impulse input (衝
         state.zr = 0.0
     state.vzr = 0
 
-def road_bump(state, height=0.02, start=0.5, duration=0.2):# Bump input (凸起)
+def road_bump(state, height=0.01, start=0.5, duration=0.2):# Bump input (凸起)
     """Half sine bump"""
 
     if start < state.t < start + duration:

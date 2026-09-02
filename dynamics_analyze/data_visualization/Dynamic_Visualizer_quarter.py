@@ -1,10 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from pathlib import Path
 
 class Visualizer:
     
-    def __init__(self, result):
+    def __init__(self, result, save_filename="quarter_suspension.gif"):
+        self.save_filename = save_filename
 
         # =====================================================
         # Data
@@ -175,17 +177,66 @@ class Visualizer:
         ax.set_title(title)
 
         for data, label in signals:
-            ax.plot(
+            line, = ax.plot(
                 self.time,
                 data,
                 label=label
             )
+            self._annotate_extrema(ax, data, label, line.get_color())
 
         if ylabel:
             ax.set_ylabel(ylabel)
 
         ax.legend()
         ax.grid()
+
+    def _annotate_extrema(self, ax, data, label, color):
+        data = np.asarray(data)
+        mask = np.isfinite(data)
+
+        if not np.any(mask):
+            return
+
+        valid_index = np.where(mask)[0]
+        valid_data = data[mask]
+
+        max_i = valid_index[np.argmax(valid_data)]
+        min_i = valid_index[np.argmin(valid_data)]
+
+        points = [
+            ("max", max_i, -20),
+        ]
+
+        if min_i != max_i:
+            points.append(("min", min_i, 20))
+        else:
+            points[0] = ("max=min", max_i, -20)
+
+        for name, i, y_offset in points:
+            x = self.time[i]
+            y = data[i]
+
+            ax.scatter(
+                x,
+                y,
+                color=color,
+                s=25,
+                zorder=5
+            )
+
+            ax.annotate(
+                f"{label} {name}: {y:.3g}",
+                xy=(x, y),
+                xytext=(8, y_offset),
+                textcoords="offset points",
+                fontsize=8,
+                color=color,
+                arrowprops={
+                    "arrowstyle": "->",
+                    "color": color,
+                    "lw": 0.8
+                }
+            )
 
     def _create_cursor(self, ax):
         
@@ -242,8 +293,9 @@ class Visualizer:
         
         total_time = self.time[-1]-self.time[0]
 
-        target_frames = int(
-            total_time * fps
+        target_frames = max(
+            1,
+            int(total_time * fps)
         )
 
         step = max(
@@ -257,16 +309,41 @@ class Visualizer:
             step
         )
 
-    def show(self, fps=30):
+    def save_gif(self, fps=30, filename=None):
+        save_path = Path(filename or self.save_filename).expanduser()
+
+        if save_path.suffix.lower() != ".gif":
+            save_path = save_path.with_suffix(".gif")
+
+        save_path = save_path.resolve()
+
+        if save_path.parent != Path("."):
+            save_path.parent.mkdir(parents=True, exist_ok=True)
+
+        print(f"Saving animation to: {save_path}", flush=True)
+
+        self.ani.save(
+            save_path,
+            writer="pillow",
+            fps=fps
+        )
+
+        print(f"Saved animation: {save_path}", flush=True)
+
+    def show(self, fps=30, save=False):
         
-        frames = self.get_animation_frames(fps)
+        frames = list(self.get_animation_frames(fps))
 
         self.ani = FuncAnimation(
             self.fig,
             self.update,
             frames=frames,
             interval=1000/fps,
-            blit=True
+            blit=True,
+            repeat=True
         )
+
+        if save:
+            self.save_gif(fps=fps)
 
         plt.show()

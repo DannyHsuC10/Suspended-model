@@ -2,16 +2,19 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import matplotlib.patches as patches
 import numpy as np
+from pathlib import Path
 
 class PitchCarVisualizer:
 
     def __init__(
         self,
         result,
-        wheelbase=1.25
+        wheelbase=1.25,
+        save_filename="pitch_suspension.gif"
     ):
 
         self.wheelbase = wheelbase
+        self.save_filename = save_filename
         self.body_offset = 0.0
 
 
@@ -265,8 +268,9 @@ class PitchCarVisualizer:
         
         total_time = self.time[-1]-self.time[0]
 
-        target_frames = int(
-            total_time * fps
+        target_frames = max(
+            1,
+            int(total_time * fps)
         )
 
         step = max(
@@ -280,16 +284,41 @@ class PitchCarVisualizer:
             step
         )
 
-    def show(self,fps = 30):
+    def save_gif(self, fps=30, filename=None):
+        save_path = Path(filename or self.save_filename).expanduser()
 
-        frames = self.get_animation_frames(fps)
+        if save_path.suffix.lower() != ".gif":
+            save_path = save_path.with_suffix(".gif")
 
-        ani = FuncAnimation(
+        save_path = save_path.resolve()
+
+        if save_path.parent != Path("."):
+            save_path.parent.mkdir(parents=True, exist_ok=True)
+
+        print(f"Saving animation to: {save_path}", flush=True)
+
+        self.ani.save(
+            save_path,
+            writer="pillow",
+            fps=fps
+        )
+
+        print(f"Saved animation: {save_path}", flush=True)
+
+    def show(self, fps=30, save=False):
+
+        frames = list(self.get_animation_frames(fps))
+
+        self.ani = FuncAnimation(
             self.fig,
             self.update,
             frames=frames,
-            interval=10,
-            blit=False
+            interval=1000/fps,
+            blit=False,
+            repeat=True
         )
+
+        if save:
+            self.save_gif(fps=fps)
 
         plt.show()

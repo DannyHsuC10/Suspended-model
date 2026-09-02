@@ -4,14 +4,18 @@ class SuspensionQuarter:
 
     def __init__(self):
 
-        self.ms = 80      # sprung mass
-        self.mu = 20      # unsprung mass
+        self.ms = 67      # sprung mass
+        self.mu = 13      # unsprung mass
         self.m_corner = self.ms+self.mu # 整體質量
 
+        # roll 40000
+        # heave 70000
+        # heave tender = 28000
+        # ks avg = 34000
+        self.ks = 40000   # 懸吊 stiffness
 
-        self.ks = 20000   # 懸吊 stiffness
-        self.cs = 700    # 單角 damping
-
+        zeta = 0.7           # Damping ratio
+        self.cs = 2 * zeta * np.sqrt(self.ks * self.mu)   # 單角 damping
         # (輪端1/4)=====================================
         MR  = 1 # Motion ratio(沒有直推直接不管她=1)
 
@@ -23,6 +27,91 @@ class SuspensionQuarter:
 
         # (整體1/8)=====================================
         self.ride_rate = self.kw*self.kt/(self.kw+self.kt)# ride rate
+
+class SuspensionQuartertender:
+
+    def __init__(self):
+
+        self.ms = 67      # sprung mass
+        self.mu = 13      # unsprung mass
+        self.m_corner = self.ms+self.mu # 整體質量
+
+        # roll 40000
+        # heave 70000
+        # heave tender = 28000
+        # ks avg = 34000
+        self.ks = 34000   # 懸吊 stiffness
+
+        zeta = 0.7           # Damping ratio
+        self.cs = 2 * zeta * np.sqrt(self.ks * self.mu)   # 單角 damping
+        # (輪端1/4)=====================================
+        MR  = 1 # Motion ratio(沒有直推直接不管她=1)
+
+        self.kt = 80000   # tire stiffness
+        self.ct = 50       # tire damping (盡量保留一個小數字)
+
+        self.kw = self.ks*MR **2    # 到輪胎上 stiffness
+        self.cw = self.cs*MR **2
+
+        # (整體1/8)=====================================
+        self.ride_rate = self.kw*self.kt/(self.kw+self.kt)# ride rate
+
+class SuspensionQuarteravg:
+
+    def __init__(self):
+
+        self.ms = 67      # sprung mass
+        self.mu = 13      # unsprung mass
+        self.m_corner = self.ms+self.mu # 整體質量
+
+        # roll 40000
+        # heave 70000
+        # heave tender = 28000
+        # ks avg = 34000
+        self.ks = 40000   # 懸吊 stiffness
+
+        zeta = 0.7           # Damping ratio
+        self.cs = 2 * zeta * np.sqrt(self.ks * self.mu)   # 單角 damping
+        # (輪端1/4)=====================================
+        MR  = 1 # Motion ratio(沒有直推直接不管她=1)
+
+        self.kt = 80000   # tire stiffness
+        self.ct = 50       # tire damping (盡量保留一個小數字)
+
+        self.kw = self.ks*MR **2    # 到輪胎上 stiffness
+        self.cw = self.cs*MR **2
+
+        # (整體1/8)=====================================
+        self.ride_rate = self.kw*self.kt/(self.kw+self.kt)# ride rate
+
+class SuspensionQuarterheave:
+
+    def __init__(self):
+
+        self.ms = 67      # sprung mass
+        self.mu = 13      # unsprung mass
+        self.m_corner = self.ms+self.mu # 整體質量
+
+        # roll 40000
+        # heave 70000
+        # heave tender = 28000
+        # ks avg = 34000
+        self.ks = 28000   # 懸吊 stiffness
+
+        zeta = 0.7           # Damping ratio
+        self.cs = 2 * zeta * np.sqrt(self.ks * self.mu)   # 單角 damping
+        # (輪端1/4)=====================================
+        MR  = 1 # Motion ratio(沒有直推直接不管她=1)
+
+        self.kt = 80000   # tire stiffness
+        self.ct = 50       # tire damping (盡量保留一個小數字)
+
+        self.kw = self.ks*MR **2    # 到輪胎上 stiffness
+        self.cw = self.cs*MR **2
+
+        # (整體1/8)=====================================
+        self.ride_rate = self.kw*self.kt/(self.kw+self.kt)# ride rate
+
 
 class SuspensionLR:
     
