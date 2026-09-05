@@ -391,6 +391,7 @@ input_r to C >>|<<(壓力 = 0) ,外力F = k_2*s_c
 液壓缸B:
 input_f to B >>|<< input_r to B ,外力F = k_3*s_b
 """
+
 # 系統架設
 input_f = HydraulicInput("input_f",1,0.01)# >>擠出液體
 input_f_port = HydraulicPort("input_f",input_f,1)

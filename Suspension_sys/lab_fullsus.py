@@ -31,8 +31,8 @@ t = np.arange(0, 2, state.dt)
 
 for ti in t:
 
-    road.road_FL_bump(state)
-    #road.road_D(state)
+    #road.road_FL_bump(state)
+    road.road_D(state)
     sm.motion(state,sus)
        # Integration
     state.Integration(sus)    
