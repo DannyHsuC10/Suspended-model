@@ -182,7 +182,7 @@ def external_moment(F_cg,M,sus):
 
     # CG 相對於參考點的位置
     r = np.array([0,0,sus.h_cg])
-    M_by_f = np.cross(r, F_cg)
+    M_by_f = np.cross(r, -F_cg)
 
     moment = M_by_f + M # 其中M是外界扭矩預設基本為 0
     
@@ -227,7 +227,7 @@ def corner_to_body(Fs_fl, Fs_fr, Fs_rl, Fs_rr,sus):# 角落力量作用在車身
     
     Fz_spring = sum(Fs_list)
 
-    My_spring = (Fs_front * sus.lf-Fs_rear * sus.lr)# pitch
+    My_spring = -(Fs_front * sus.lf-Fs_rear * sus.lr)# pitch
 
     Mx_f_spring = dF_front * sus.tf
     Mx_r_spring = dF_rear * sus.tr# roll
@@ -245,13 +245,13 @@ def sprung_moment(M_ext ,M_spring, M_geo, state, sus): # 簧上
     """
     M_twist = chassis_torsion(state, sus)
 
-    moment = M_ext + M_spring + M_geo
+    moment = M_ext + M_spring - M_geo
 
     # chassis torsion
     moment[0] += M_twist
     moment[1] -= M_twist
 
-    #print(M_ext,M_spring,M_geo,moment)
+    print("M",M_ext,M_spring,M_geo,moment)
     
     return moment
 
@@ -261,11 +261,9 @@ def unsprung_force(F_geo , F_kc , Fs): #簧下
     F_rc : 必須要保持力矩平衡,負回受自動會扣除rc先傳過去的力量,下一個步階會去壓縮輪胎重新達到系統平衡
     """
 
+    Ft = F_kc - Fs + F_geo
 
-
-    Ft = F_kc - Fs - F_geo
-
-    #print(F_kc,Fs,F_geo)
+    print("F",F_kc,Fs,F_geo)
 
     return Ft
 
@@ -282,7 +280,7 @@ def Suspension_output(state,sus):# 懸吊力量輸出
     Fz = Fz_spring + state.F_cg[2]
     
     # -----------------------------------------
-    F_geo,M_geo = F_geo, M_geo = sus.geometry.force(state)# 幾何力量
+    F_geo, M_geo = sus.geometry.force(state)# 幾何力量
     
     M_ext = external_moment(state.F_cg,state.M,sus)# 外界力
 

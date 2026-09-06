@@ -116,10 +116,10 @@ class full_suspension_state:
         """用於四分之一模型可以使用檢視"""
         z = s[2]
 
-        fl = z + theta[2]*sus.lf + theta[0]*sus.tf/2
-        fr = z + theta[2]*sus.lf - theta[0]*sus.tf/2
-        rl = z - theta[2]*sus.lr + theta[1]*sus.tr/2
-        rr = z - theta[2]*sus.lr - theta[1]*sus.tr/2
+        fl = z - theta[2]*sus.lf + theta[0]*sus.tf/2
+        fr = z - theta[2]*sus.lf - theta[0]*sus.tf/2
+        rl = z + theta[2]*sus.lr + theta[1]*sus.tr/2
+        rr = z + theta[2]*sus.lr - theta[1]*sus.tr/2
 
         zs = np.array([fl,fr,rl,rr])
 

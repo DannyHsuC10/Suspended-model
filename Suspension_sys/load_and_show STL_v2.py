@@ -221,7 +221,7 @@ while True:
 
     car.SetOrientation(
         np.degrees(roll[frame]),
-        -np.degrees(pitch[frame]),
+        np.degrees(pitch[frame]),
         np.degrees(yaw[frame])
     )
 

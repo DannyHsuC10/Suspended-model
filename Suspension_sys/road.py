@@ -7,7 +7,7 @@ def road_D(state):
     state.zr = np.zeros(4)
 
     if 0.5< state.t:
-        state.Fy = (1000.0,1000.0,1000.0,1000.0)
+        state.Fy = (-1000.0,-1000.0,-1000.0,-1000.0)
         state.Fx = (-1000.0,-1000.0,-1000.0,-1000.0)
         state.F_cg = np.array([sum(state.Fx),sum(state.Fy),-321*9.81])
 

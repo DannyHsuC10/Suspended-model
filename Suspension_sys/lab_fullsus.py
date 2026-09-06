@@ -13,7 +13,7 @@ from data_visualization.plot_results import plot_vehicle_results
 from Suspension_LP03 import Suspension_A
 from Vehicle_status import full_suspension_state
 import road
-from model import Suspension_model_v12 as sm
+from model import Suspension_model_v13 as sm
 
 import Data_extraction as de
 

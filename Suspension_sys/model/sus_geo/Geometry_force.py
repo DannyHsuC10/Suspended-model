@@ -65,7 +65,7 @@ class GeometryModel:
                 # driving
                 rate = lift_front
 
-            F_anti[i] = (fx* rate* v_geo.h_cg/ v_geo.lf)
+            F_anti[i] = -(fx* rate* v_geo.h_cg/ v_geo.lf)
 
         # Rear axle
         for i in [2,3]:
@@ -79,14 +79,14 @@ class GeometryModel:
                 # braking
                 rate = lift_rear
 
-            F_anti[i] = (fx* rate* v_geo.h_cg/ v_geo.lr)
+            F_anti[i] = -(fx* rate* v_geo.h_cg/ v_geo.lr)
 
         # pitch moment
         F_front = F_anti[0] + F_anti[1]
         F_rear = F_anti[2] + F_anti[3]
 
 
-        M_geoy = (F_front * v_geo.lf - F_rear * v_geo.lr)
+        M_geoy = -(F_front * v_geo.lf - F_rear * v_geo.lr)
 
 
         return F_anti, M_geoy
